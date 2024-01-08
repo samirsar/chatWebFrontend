@@ -9,6 +9,7 @@ import {
   Link,
 } from "react-router-dom";
 import RegisterUser from './componets/RegisterUser.tsx';
+import LoginUser from './componets/LoginUser.tsx';
 const router = createBrowserRouter([
   {
     path: "/",
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
   {
     path: "register",
     element: <RegisterUser/>,
+  },
+  {
+    path: "login",
+    element: <LoginUser/>,
   },
 ]);
 ReactDOM.createRoot(document.getElementById('root')!).render(

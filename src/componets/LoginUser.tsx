@@ -23,7 +23,7 @@ const onFinish = (values: any) => {
   console.log(values);
 };
 
-const RegisterUser: React.FC = () => (
+const LoginUser: React.FC = () => (
   <Row justify={"center"} align={"middle"} style={{ height: "100vh" }}>
     <Col span={6}>
       <Form
@@ -33,27 +33,6 @@ const RegisterUser: React.FC = () => (
         style={{ maxWidth: "100%" }}
         validateMessages={validateMessages}
       >
-        <Form.Item
-          name={["user", "first_name"]}
-          label="First Name"
-          rules={[{ required: true }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          name={["user", "last_name"]}
-          label="Last Name"
-          rules={[{ required: true }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          name={["user", "email"]}
-          label="Email"
-          rules={[{ type: "email" }]}
-        >
-          <Input />
-        </Form.Item>
         <Form.Item
           name={["user", "user_name"]}
           label="User Name"
@@ -70,7 +49,7 @@ const RegisterUser: React.FC = () => (
         </Form.Item>
         <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
           <Button type="primary" htmlType="submit">
-            Register
+            Login
           </Button>
         </Form.Item>
       </Form>
@@ -78,4 +57,4 @@ const RegisterUser: React.FC = () => (
   </Row>
 );
 
-export default RegisterUser;
+export default LoginUser;
