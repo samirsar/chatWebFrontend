@@ -15,7 +15,7 @@ export const login = async (req: ReqType) => {
     throw error;
   }
 };
-export const SignUp = async (req: ReqType) => {
+export const signUp = async (req: ReqType) => {
   try {
     let url = "/v1/api/users/create";
     const resp = await API.post(url, req.body ? req.body : {}, {});
