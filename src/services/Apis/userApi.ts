@@ -26,13 +26,17 @@ export const signUp = async (req: ReqType) => {
 };
 export const getUsers = async (req: ReqType) => {
   const token = Cookies.get("user");
+  if(token)
+  console.log(JSON.parse(token).token)
   try {
     let url = "/v1/api/users/all";
+    if(req.id)
+    url=`/v1/api/users/user/${req.id}`;
     const resp = await API.get(
       url,
       req.body ? req.body : {},
       {
-        Authorization: `Bearer ${token ? JSON.parse(token).access : ""}`,
+        Authorization: `${token ? JSON.parse(token).token : ""}`,
       },
       req.params
     );

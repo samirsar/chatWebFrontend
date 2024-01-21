@@ -2,11 +2,12 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { message } from "antd";
 
 export type UserType = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  userName: string;
-  userType: string;
+  id:string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  userName?: string;
+  userType?: string;
 };
 export type UsersState = {
   users: UserType[];
@@ -70,7 +71,7 @@ export const userSlice = createSlice({
     },
     userDetailsSuccess: (
       state,
-      action: PayloadAction<{ user: UserType; total_count: number }>
+      action: PayloadAction<{ user: UserType; }>
     ) => {
       state.userDetails.isLoading = false;
       state.userDetails.error = null;

@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { ReqType, getUsers, login, signUp } from '../../../services/Apis/userApi';
-import { UserType, userDetailsFailure, userDetailsLoadingStart, userLoginSuccess, userSignUpSuccess, usersLoadingStart, usersSuccess } from './userSlice';
+import { UserType, userDetailsFailure, userDetailsLoadingStart, userDetailsSuccess, userLoginSuccess, userSignUpSuccess, usersLoadingStart, usersSuccess } from './userSlice';
 
 export const loginUser = createAsyncThunk(
     'user/loginUser',
@@ -50,6 +50,24 @@ export const GetUsers = createAsyncThunk(
         return response.data;
       } catch (error: any) {
         const errorMessage = error.response.data.message || 'Failed to register user';
+        dispatch(userDetailsFailure(errorMessage));
+  
+        return rejectWithValue(errorMessage);
+      }
+    }
+  );
+export const GetUserDetails = createAsyncThunk(
+    'user/getUserDetails',
+    async (req:ReqType, { rejectWithValue, dispatch }) => {
+      try {
+        dispatch(userDetailsLoadingStart());
+  
+        const response = await getUsers(req);
+        const users:UserType=response.data.data;
+          dispatch(userDetailsSuccess({user:users}));
+        return response.data;
+      } catch (error: any) {
+        const errorMessage = error.response.data.message || 'Failed to fetch user details';
         dispatch(userDetailsFailure(errorMessage));
   
         return rejectWithValue(errorMessage);

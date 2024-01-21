@@ -27,9 +27,9 @@ export default function RegisterUser() {
       const body={
         userName:values.user.user_name,
         password:values.user.password,
-        firstName:values.first_name,
-        lastName:values.last_name,
-        email:values.email,
+        firstName:values.user.first_name,
+        lastName:values.user.last_name,
+        email:values.user.email,
         userType:"ADMIN",
       }
       dispatch(SignUpUser({body})).then((data)=>{
