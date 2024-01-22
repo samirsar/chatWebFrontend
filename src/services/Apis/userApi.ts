@@ -27,7 +27,6 @@ export const signUp = async (req: ReqType) => {
 export const getUsers = async (req: ReqType) => {
   const token = Cookies.get("user");
   if(token)
-  console.log(JSON.parse(token).token)
   try {
     let url = "/v1/api/users/all";
     if(req.id)

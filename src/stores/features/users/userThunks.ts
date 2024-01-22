@@ -44,10 +44,10 @@ export const GetUsers = createAsyncThunk(
         dispatch(usersLoadingStart());
   
         const response = await getUsers(req);
-        const users:UserType[]=response.data.data;
-        const total_count=response.data.total_count;
+        const users:UserType[]=response?.data.data;
+        const total_count=response?.data.total_count;
           dispatch(usersSuccess({users:users,total_count:total_count}));
-        return response.data;
+        return response?.data;
       } catch (error: any) {
         const errorMessage = error.response.data.message || 'Failed to register user';
         dispatch(userDetailsFailure(errorMessage));
@@ -63,9 +63,9 @@ export const GetUserDetails = createAsyncThunk(
         dispatch(userDetailsLoadingStart());
   
         const response = await getUsers(req);
-        const users:UserType=response.data.data;
+        const users:UserType=response?.data.data;
           dispatch(userDetailsSuccess({user:users}));
-        return response.data;
+        return response?.data;
       } catch (error: any) {
         const errorMessage = error.response.data.message || 'Failed to fetch user details';
         dispatch(userDetailsFailure(errorMessage));
