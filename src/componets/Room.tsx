@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { UserOutlined, SendOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Breadcrumb, Button, Form, Input, Layout, Menu, theme } from "antd";
+import io, { Socket } from "socket.io-client";
 import Cookies from "js-cookie";
 import { UserType } from "../stores/features/users/userSlice";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +14,7 @@ import {
   SendMessages,
 } from "../stores/features/messages/messageThunks";
 import { getMessageBetweenSenderAndReceiver } from "../services/Apis/messageApi";
+import { MessageType } from "../stores/features/messages/messageSlice";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -33,11 +35,13 @@ function getItem(
 }
 
 const Room: React.FC = () => {
+  const [socket, setSocket] = useState<Socket | null>(null);
   const dispatch = useAppDispatch();
   const usersState = useAppSelector((state) => state.userSlice.users);
   const selectedUserDetail = useAppSelector(
     (state) => state.userSlice.userDetails
   );
+  const [currentMessages, setCurrentMessages] = useState<MessageType[]>([])
   const messages = useAppSelector((state) => state.messageSlice);
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
@@ -63,11 +67,18 @@ const Room: React.FC = () => {
       receiverId: selectedUser,
       text: value.message,
     };
-    dispatch(SendMessages({ body })).then(() => {
-      setIsSent(true);
+
+    // Emit a Socket.io event to send the private message
+    let index = currentMessages.length;
+
+    setCurrentMessages((prevArray) => {
+      return [...prevArray, { ...body, id: `${index}` }];
     });
+    
+    if (socket) socket.emit("message", body);
     form.resetFields();
   };
+
   useEffect(() => {
     const data = Cookies.get("user");
     let userData: any = undefined;
@@ -114,7 +125,58 @@ const Room: React.FC = () => {
         })
       );
     }
-  }, [isSent,UserDetail,selectedUser]);
+  }, [isSent, UserDetail, selectedUser]);
+  useEffect(()=>{
+    setCurrentMessages(()=>{
+      return messages.messages.map((elm,index)=>{
+        return {
+          ...elm,
+          id:`${index+1}`,
+        }
+      })
+    })
+
+  },[messages])
+
+  useEffect(() => {
+    // Socket.io event for receiving private messages
+    if (socket) {
+      // console.log("WebSocket connection status:", socket.connected);
+      socket.on("message", (msg) => {
+        let index=currentMessages.length;
+        setCurrentMessages((prevArray)=>{
+          return [...prevArray,{...msg.message,id:`${index}`}]
+        })
+        // Update your Redux state or other state management logic to display the received message
+        // For example, dispatch an action to update the messages state in Redux
+      });
+
+      // Log WebSocket connection status inside the event listener
+
+      return () => {
+        // Clean up Socket.io events when the component unmounts
+        socket.off("private message");
+      };
+    }
+  }, [socket]); // Include socket in the dependency array
+
+  useEffect(() => {
+    if (UserDetail) {
+      const newSocket = io("http://localhost:4000", {
+        query: {
+          userId: UserDetail?.id,
+        },
+      });
+
+      setSocket(newSocket);
+
+      // Clean up the socket connection when the component unmounts
+      return () => {
+        newSocket.disconnect();
+      };
+    }
+    // Initialize socket connection once when the component mounts
+  }, [UserDetail]);
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -151,13 +213,12 @@ const Room: React.FC = () => {
               borderRadius: borderRadiusLG,
             }}
           >
-            {messages.messages.map((elm, index) => {
+            {currentMessages.map((elm, index) => {
               return (
                 <h3
                   key={index}
                   style={
-                    selectedUser &&
-                    (selectedUser == elm.receiverId)
+                    selectedUser && selectedUser == elm.receiverId
                       ? { color: "green" }
                       : { color: "red" }
                   }
