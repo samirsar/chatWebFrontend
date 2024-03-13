@@ -11,9 +11,7 @@ import { GetUserDetails, GetUsers } from "../stores/features/users/userThunks";
 import MenuItem from "antd/es/menu/MenuItem";
 import {
   GetMessages,
-  SendMessages,
 } from "../stores/features/messages/messageThunks";
-import { getMessageBetweenSenderAndReceiver } from "../services/Apis/messageApi";
 import { MessageType } from "../stores/features/messages/messageSlice";
 
 const { Header, Content, Footer, Sider } = Layout;
